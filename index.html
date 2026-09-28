@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tapmote เปลี่ยน iPhone และ iPad เป็นทัชแพด คีย์บอร์ด และจอของ Mac">
+<title>Tapmote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --ink: #0E1A3D;
+    --ink-soft: #4A5578;
+    --paper: #F4F6FB;
+    --surface: #FFFFFF;
+    --line: #DCE2F1;
+    --brand: #2F5BFF;
+    --brand-deep: #1733B8;
+    --cyan: #2FB3EE;
+    --glass: rgba(255,255,255,0.72);
+    --screen-a: #5FD0FF;
+    --screen-b: #2A7BFF;
+    --shadow: 0 18px 50px -20px rgba(14,26,61,0.35);
+    --display: "Mitr", "IBM Plex Sans Thai", system-ui, sans-serif;
+    --body: "IBM Plex Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ink: #E7ECFF;
+      --ink-soft: #9CA7CC;
+      --paper: #0A1022;
+      --surface: #121A33;
+      --line: #25304F;
+      --brand: #6D8BFF;
+      --brand-deep: #9FB3FF;
+      --cyan: #58C8F5;
+      --glass: rgba(18,26,51,0.75);
+      --shadow: 0 18px 50px -20px rgba(0,0,0,0.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #E7ECFF;
+    --ink-soft: #9CA7CC;
+    --paper: #0A1022;
+    --surface: #121A33;
+    --line: #25304F;
+    --brand: #6D8BFF;
+    --brand-deep: #9FB3FF;
+    --cyan: #58C8F5;
+    --glass: rgba(18,26,51,0.75);
+    --shadow: 0 18px 50px -20px rgba(0,0,0,0.7);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 16px/1.7 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--brand); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+
+  /* ---- ส่วนหัว ---- */
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 600 20px/1 var(--display); color: var(--ink); text-decoration: none; }
+  .brand-mark { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #2F5BFF, #0B1F7A); display: grid; place-items: center; }
+  .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-size: 15px; }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+
+  /* ---- ส่วนเปิด ---- */
+  .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 40px 72px; }
+  .hero > *, .download > * { min-width: 0; }
+  .eyebrow { font: 500 13px/1 var(--mono); letter-spacing: .08em; color: var(--brand); text-transform: uppercase; }
+  h1 { font: 600 clamp(36px, 5.4vw, 60px)/1.12 var(--display); margin: 14px 0 18px; text-wrap: balance; letter-spacing: -0.01em; }
+  h1 em { font-style: normal; color: var(--brand); white-space: nowrap; }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 34em; margin: 0 0 28px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 12px; font: 600 16px/1.2 var(--body); text-decoration: none; border: 1px solid transparent; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-deep); }
+  :root[data-theme="dark"] .btn-primary:hover { color: #0A1022; }
+  .btn-ghost { border-color: var(--line); color: var(--ink); background: var(--surface); }
+  .btn small { display: block; font-weight: 400; font-size: 12px; opacity: .8; }
+  .btn:focus-visible, .nav-links a:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .fineprint { font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
+
+  /* ---- เดโมทัชแพด ---- */
+  .demo { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0; }
+  .mac {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px;
+    box-shadow: var(--shadow);
+  }
+  .mac-screen {
+    position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 10px; overflow: hidden;
+    background: linear-gradient(160deg, var(--screen-a), var(--screen-b));
+  }
+  .win { position: absolute; background: rgba(255,255,255,0.92); border-radius: 8px; box-shadow: 0 6px 16px rgba(10,20,60,.25); }
+  .win::before { content: ""; position: absolute; left: 8px; top: 7px; width: 26px; height: 6px; border-radius: 3px;
+    background: radial-gradient(circle at 3px 3px, #FF5F57 3px, transparent 3.5px), radial-gradient(circle at 13px 3px, #FEBC2E 3px, transparent 3.5px), radial-gradient(circle at 23px 3px, #28C840 3px, transparent 3.5px); }
+  .win.a { left: 7%; top: 12%; width: 48%; height: 52%; }
+  .win.b { left: 44%; top: 34%; width: 46%; height: 50%; }
+  .win .bar { position: absolute; left: 10%; right: 10%; height: 6%; border-radius: 3px; background: #D6DEF5; }
+  .dock { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); display: flex; gap: 6px; padding: 5px 8px; border-radius: 10px; background: rgba(255,255,255,.35); }
+  .dock i { width: 14px; height: 14px; border-radius: 4px; background: rgba(255,255,255,.85); display: block; }
+  .cursor { position: absolute; left: 30%; top: 40%; width: 18px; height: 26px; pointer-events: none; transition: transform .06s linear; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  .ripple { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 2px solid #fff; pointer-events: none; animation: ripple .45s ease-out forwards; }
+  @keyframes ripple { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+
+  .phone {
+    width: 150px; margin-left: -34px; margin-bottom: -26px; position: relative; z-index: 2;
+    background: #0E1433; border-radius: 26px; padding: 9px; box-shadow: var(--shadow); border: 1px solid #2A3566;
+  }
+  .phone-inner { border-radius: 19px; overflow: hidden; background: #151D45; display: flex; flex-direction: column; }
+  .island { width: 44px; height: 12px; border-radius: 8px; background: #000; margin: 7px auto 6px; }
+  .pad {
+    position: relative; margin: 0 8px; height: 190px; border-radius: 12px;
+    background: #222B5C; touch-action: none; cursor: grab; outline: none;
+  }
+  .pad:active { cursor: grabbing; }
+  .pad:focus-visible { box-shadow: 0 0 0 3px var(--cyan); }
+  .pad-hint { position: absolute; inset: auto 0 10px; text-align: center; font-size: 10px; color: #9FB0E8; line-height: 1.3; pointer-events: none; }
+  .clicks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px; }
+  .clicks span { height: 26px; border-radius: 7px; background: #222B5C; display: grid; place-items: center; font-size: 10px; color: #C3CEF5; }
+  .demo-caption { grid-column: 1 / -1; margin-top: 40px; font-size: 13px; color: var(--ink-soft); }
+
+  /* ---- ส่วนเนื้อหา ---- */
+  section { padding-block: 64px; }
+  h2 { font: 600 clamp(26px, 3.4vw, 38px)/1.2 var(--display); margin: 0 0 12px; text-wrap: balance; }
+  .section-lede { color: var(--ink-soft); max-width: 40em; margin: 0 0 36px; }
+
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+  .steps li { counter-increment: step; padding: 22px; border-top: 3px solid var(--brand); background: var(--surface); border-radius: 0 0 14px 14px; }
+  .steps li::before { content: counter(step); font: 500 13px/1 var(--mono); color: var(--brand); display: block; margin-bottom: 12px; }
+  .steps h3 { font: 600 19px/1.35 var(--display); margin: 0 0 6px; }
+  .steps p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .pin { font: 500 22px/1 var(--mono); letter-spacing: .12em; color: var(--ink); background: var(--paper); border: 1px dashed var(--line); padding: 6px 10px; border-radius: 8px; display: inline-block; margin-top: 10px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px 32px; }
+  .feature h3 { font: 600 18px/1.35 var(--display); margin: 10px 0 6px; }
+  .feature p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .ico { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: color-mix(in srgb, var(--brand) 12%, transparent); color: var(--brand); }
+  .ico svg { width: 22px; height: 22px; }
+
+  .gestures { overflow-x: auto; margin-top: 8px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 15px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 500 13px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .plan.featured { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+  .plan h3 { font: 600 20px/1.3 var(--display); margin: 0 0 4px; }
+  .plan .price { font: 600 15px/1.4 var(--body); color: var(--brand); margin-bottom: 12px; }
+  .plan ul { margin: 0; padding-left: 20px; color: var(--ink-soft); }
+
+  .download { background: linear-gradient(135deg, #1B3BD6, #0B1F7A); color: #EAF0FF; border-radius: 22px; padding: 44px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; }
+  .download h2 { color: #fff; }
+  .download p { color: #C9D5FF; margin: 0; }
+  .download .btn-primary { background: #fff; color: #0B1F7A; }
+  .download .btn-primary:hover { background: #E3EAFF; }
+  .download .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); }
+  .req { font-size: 13px; color: #AFC0F5; margin-top: 12px; }
+
+  details { border-bottom: 1px solid var(--line); padding-block: 16px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::after { content: "+"; font: 500 20px/1 var(--mono); color: var(--brand); }
+  details[open] summary::after { content: "–"; }
+  summary:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+  details p { color: var(--ink-soft); margin: 10px 0 0; max-width: 46em; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-soft); font-size: 14px; }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--ink-soft); }
+
+  @media (max-width: 880px) {
+    .hero, .download { grid-template-columns: minmax(0, 1fr); }
+    .steps, .features { grid-template-columns: 1fr 1fr; }
+    .hero { padding-block: 16px 48px; }
+    .download { padding: 30px 22px; }
+  }
+  @media (max-width: 560px) {
+    .steps, .features, .plans { grid-template-columns: 1fr; }
+    .phone { width: 124px; margin-left: -22px; }
+    .pad { height: 150px; }
+    .nav-links { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { transition: none; }
+    .ripple { animation: none; opacity: 0; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Tapmote หน้าแรก">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="15" height="11" rx="2" stroke="#fff" stroke-width="2"/><path d="M7 19h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="15" y="9" width="7" height="12" rx="2" fill="#5FD0FF" stroke="#fff" stroke-width="1.5"/></svg>
+      </span>
+      Tapmote
+    </a>
+    <nav class="nav-links" aria-label="เมนู">
+      <a href="#how">วิธีใช้</a>
+      <a href="#features">ความสามารถ</a>
+      <a href="#download">ดาวน์โหลด</a>
+      <a href="#faq">คำถามที่พบบ่อย</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Remote for Mac · iPhone &amp; iPad</div>
+        <h1>นอนอยู่บนโซฟา<br>ก็คุม Mac ได้<em>ทั้งเครื่อง</em></h1>
+        <p class="lede">Tapmote เปลี่ยน iPhone หรือ iPad เป็นทัชแพด คีย์บอร์ด และจอที่สองของ Mac ใช้ท่าเดียวกับแทร็กแพด MacBook ทั้งสองนิ้ว สามนิ้ว ฟรีทั้งหมด ไม่มีโฆษณา</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#download">ดาวน์โหลดสำหรับ Mac<small>macOS 14 ขึ้นไป · ฟรี</small></a>
+          <a class="btn btn-ghost" href="#how">ดูวิธีเริ่มใช้</a>
+        </div>
+        <p class="fineprint">ไม่ต้องสมัครบัญชี · ข้อมูลวิ่งตรงระหว่างเครื่องของคุณ ไม่ผ่านเซิร์ฟเวอร์</p>
+      </div>
+
+      <div class="demo" aria-label="เดโมทัชแพด: ลากบนจอโทรศัพท์เพื่อเลื่อนเมาส์บนจอ Mac">
+        <div class="mac">
+          <div class="mac-screen" id="screen">
+            <div class="win a"><div class="bar" style="top:26%"></div><div class="bar" style="top:40%;right:30%"></div><div class="bar" style="top:54%;right:45%"></div></div>
+            <div class="win b"><div class="bar" style="top:28%;right:40%"></div><div class="bar" style="top:42%"></div></div>
+            <div class="dock" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <svg class="cursor" id="cursor" viewBox="0 0 18 26" aria-hidden="true"><path d="M1.5 1.5v20l5.2-5 3.6 8 3.4-1.6-3.6-7.7 7.2-.3z" fill="#fff" stroke="#0B1F7A" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="phone" aria-hidden="false">
+          <div class="phone-inner">
+            <div class="island"></div>
+            <div class="pad" id="pad" tabindex="0" role="application" aria-label="ทัชแพดทดลอง ลากหรือใช้ปุ่มลูกศรเพื่อเลื่อนเมาส์ แตะหรือกด Enter เพื่อคลิก">
+              <div class="pad-hint">ลองลากตรงนี้<br>แตะเพื่อคลิก</div>
+            </div>
+            <div class="clicks" aria-hidden="true"><span>คลิกซ้าย</span><span>คลิกขวา</span></div>
+          </div>
+        </div>
+        <p class="demo-caption">ลองลากบนจอโทรศัพท์ด้านบน เมาส์บน Mac จะขยับตาม ยิ่งลากเร็วเมาส์ยิ่งไปไกล เหมือนแทร็กแพดจริง</p>
+      </div>
+    </div>
+
+    <section id="how">
+      <h2>เริ่มใช้ใน 3 ขั้น</h2>
+      <p class="section-lede">ตั้งค่าครั้งเดียว ครั้งต่อไปแตะชื่อ Mac แล้วเข้าได้เลย</p>
+      <ol class="steps">
+        <li>
+          <h3>ลงแอพบน Mac</h3>
+          <p>โหลด Tapmote สำหรับ Mac เปิดแล้วทำตามหน้าต่างแนะนำ กดอนุญาตสิทธิ์ 2 อย่าง ใช้เวลาไม่ถึงนาที</p>
+        </li>
+        <li>
+          <h3>ลงแอพบน iPhone หรือ iPad</h3>
+          <p>โหลด Tapmote จาก App Store แล้วต่อ Wi-Fi เดียวกับ Mac แอพจะเจอ Mac ให้เอง</p>
+        </li>
+        <li>
+          <h3>ใส่รหัสจับคู่ครั้งเดียว</h3>
+          <p>แตะชื่อ Mac แล้วใส่รหัส 6 หลักที่แสดงบนแถบเมนูของ Mac</p>
+          <span class="pin" aria-label="ตัวอย่างรหัส">482 915</span>
+        </li>
+      </ol>
+    </section>
+
+    <section id="features">
+      <h2>คุมได้เหมือนนั่งหน้าเครื่อง</h2>
+      <p class="section-lede">ออกแบบมาให้มือถือเป็นแทร็กแพด ไม่ใช่แค่หน้าจอย่อส่วน</p>
+      <div class="features">
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 9v6M9 12h6"/></svg></div>
+          <h3>ทัชแพดล้วนทั้งจอ</h3>
+          <p>นั่งเห็นจอ Mac อยู่แล้ว เปิดโหมดนี้แล้วทั้งจอโทรศัพท์เป็นทัชแพด ไม่ส่งภาพ ประหยัดแบตและเน็ต</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <h3>ดูและคุมหน้าจอ Mac</h3>
+          <p>ภาพหน้าจอสด แตะตรงไหนก็คลิกตรงนั้น ซูมด้วยสองนิ้ว ความคมชัดปรับเองตามความเร็วเน็ต</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 13V6a1.5 1.5 0 0 1 3 0v6M9 11V4.5a1.5 1.5 0 0 1 3 0V11M12 11V5.5a1.5 1.5 0 0 1 3 0V12M15 12V8a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-.5a6 6 0 0 1-5-2.7L3 14"/></svg></div>
+          <h3>ท่าสามนิ้วแบบ Mac</h3>
+          <p>ปัดขึ้นเปิด Mission Control ปัดซ้ายขวาสลับหน้าจอ หรือตั้งเป็นลากของด้วยสามนิ้ว</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></div>
+          <h3>พิมพ์ภาษาไทยได้</h3>
+          <p>พิมพ์จากคีย์บอร์ดมือถือ ส่งไปทั้งประโยค มีปุ่มลัดอย่าง ⌘C ⌘V ⌘⇥ และใช้ Magic Keyboard ของ iPad ได้เต็มที่</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>ปลอดภัยโดยไม่ต้องมีบัญชี</h3>
+          <p>จับคู่ด้วยรหัสครั้งเดียว เครื่องที่ถูกลบออกจากรายการบน Mac เข้าไม่ได้ทันที ภาพและคำสั่งวิ่งตรงระหว่างเครื่องของคุณ ไม่ผ่านเซิร์ฟเวอร์ของใคร</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+          <h3>หลาย Mac สลับได้ทันที</h3>
+          <p>จำ Mac ได้หลายเครื่อง ต่อค้างไว้พร้อมกันแล้วสลับจากแถบด้านบน ใช้ VPN ส่วนตัวอย่าง Tailscale หรือ NetBird อยู่แล้ว ก็ต่อจากนอกบ้านได้</p>
+        </div>
+      </div>
+
+      <div class="gestures">
+        <table>
+          <thead><tr><th>ท่าบนทัชแพด</th><th>บน Mac</th></tr></thead>
+          <tbody>
+            <tr><td>แตะ 1 นิ้ว</td><td>คลิก (แตะสองครั้งเร็ว ๆ = ดับเบิลคลิก)</td></tr>
+            <tr><td>แตะ 2 นิ้ว</td><td>คลิกขวา</td></tr>
+            <tr><td>ลาก 2 นิ้ว</td><td>เลื่อนหน้า</td></tr>
+            <tr><td>แตะค้างแล้วลาก</td><td>ลากไฟล์ ย้ายหน้าต่าง คลุมข้อความ</td></tr>
+            <tr><td>ปัด 3 นิ้วขึ้น / ลง</td><td>Mission Control / App Exposé</td></tr>
+            <tr><td>ปัด 3 นิ้วซ้าย / ขวา</td><td>สลับหน้าจอ (Space)</td></tr>
+            <tr><td>แตะ 3 นิ้ว</td><td>ค้นหาความหมายคำ (Look Up)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="plans">
+      <h2>ฟรีทั้งหมด</h2>
+      <p class="section-lede">ไม่มีโฆษณา ไม่มีค่าสมาชิก ไม่ต้องสมัครบัญชี</p>
+      <div class="plans">
+        <div class="plan featured">
+          <h3>Tapmote</h3>
+          <div class="price">ฟรี</div>
+          <ul>
+            <li>ทัชแพด คีย์บอร์ด ปุ่มลัด ท่าสองนิ้วและสามนิ้ว</li>
+            <li>ดูและคุมหน้าจอ Mac ลื่นสูงสุด 60 fps</li>
+            <li>จับคู่ได้หลาย Mac ทั้ง iPhone และ iPad</li>
+          </ul>
+        </div>
+        <div class="plan">
+          <h3>ใช้นอกบ้าน</h3>
+          <div class="price">ผ่าน VPN ส่วนตัวของคุณ</div>
+          <ul>
+            <li>ใช้ Tailscale หรือ NetBird อยู่แล้ว? ต่อจากที่ไหนก็ได้</li>
+            <li>แบบไม่ต้องตั้งค่าอะไรเลย กำลังจะมาในเวอร์ชันถัดไป</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="download">
+        <div>
+          <h2>ดาวน์โหลด Tapmote</h2>
+          <p>ลงแอพบน Mac ก่อน แล้วโหลดแอพบน iPhone หรือ iPad แอพฝั่ง Mac ลงลายเซ็นผู้พัฒนาและผ่านการตรวจของ Apple แล้ว เปิดได้โดยไม่มีคำเตือน</p>
+        </div>
+        <div>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="Tapmote.dmg">Tapmote สำหรับ Mac<small>เวอร์ชัน 1.0 · 1.3 MB</small></a>
+            <a class="btn btn-ghost" href="#download">iPhone / iPad<small>เร็ว ๆ นี้บน App Store</small></a>
+          </div>
+          <p class="req">ต้องการ macOS 14 ขึ้นไป · iOS / iPadOS 17 ขึ้นไป</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>คำถามที่พบบ่อย</h2>
+      <details>
+        <summary>ต้องสมัครบัญชีไหม</summary>
+        <p>ไม่ต้อง จับคู่ iPhone/iPad กับ Mac ด้วยรหัส 6 หลักครั้งเดียว เครื่องที่จับคู่แล้วจะเข้าได้เลยจนกว่าคุณจะลบออกจากรายการบน Mac</p>
+      </details>
+      <details>
+        <summary>ปลอดภัยแค่ไหน ใครเห็นหน้าจอ Mac ของฉันได้บ้าง</summary>
+        <p>เห็นได้เฉพาะเครื่องที่คุณจับคู่ไว้ ภาพและคำสั่งวิ่งตรงระหว่าง Mac กับ iPhone/iPad ในเครือข่ายของคุณ ไม่ผ่านเซิร์ฟเวอร์ของเรา และไม่มีการบันทึกภาพหน้าจอเก็บไว้ แนะนำให้ใช้ใน Wi-Fi บ้านหรือเครือข่ายที่ไว้ใจได้</p>
+      </details>
+      <details>
+        <summary>ทำไม Mac ต้องขอสิทธิ์บันทึกหน้าจอและการช่วยการเข้าถึง</summary>
+        <p>สิทธิ์บันทึกหน้าจอใช้ส่งภาพจอไปยังเครื่องของคุณ สิทธิ์การช่วยการเข้าถึงใช้เปลี่ยนการแตะบนมือถือเป็นการคลิกและพิมพ์บน Mac ทั้งสองอย่างเป็นสิทธิ์มาตรฐานที่แอพรีโมททุกตัวต้องใช้</p>
+      </details>
+      <details>
+        <summary>Mac ต้องเปิดเครื่องไว้ไหม</summary>
+        <p>ต้องเปิดอยู่และไม่หลับ ขณะมีเครื่องเชื่อมต่อ Tapmote จะกันไม่ให้ Mac หลับให้เอง ถ้าจะใช้ผ่าน VPN จากนอกบ้าน แนะนำให้ตั้ง Mac ไม่ให้หลับตอนเสียบสายชาร์จ</p>
+      </details>
+      <details>
+        <summary>ใช้คุม iPad จาก iPhone ได้ไหม</summary>
+        <p>ไม่ได้ iPadOS ไม่อนุญาตให้แอพสั่งงานแอพอื่นบน iPad Tapmote จึงใช้คุม Mac เท่านั้น แต่ใช้ iPad เป็นตัวคุม Mac ได้เต็มรูปแบบ</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Tapmote</span>
+    <nav aria-label="ลิงก์ท้ายหน้า">
+      <a href="support.html">ติดต่อ / ช่วยเหลือ</a>
+      <a href="privacy.html">นโยบายความเป็นส่วนตัว</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var pad = document.getElementById('pad');
+  var screen = document.getElementById('screen');
+  var cursor = document.getElementById('cursor');
+  if (!pad || !screen || !cursor) return;
+  // ตำแหน่งเมาส์เป็นสัดส่วนของจอ (0–1)
+  var pos = { x: 0.3, y: 0.4 };
+  var last = null, moved = 0, downAt = 0;
+
+  function place() {
+    var w = screen.clientWidth, h = screen.clientHeight;
+    cursor.style.transform = 'translate(' + (pos.x * w - 0.3 * w) + 'px,' + (pos.y * h - 0.4 * h) + 'px)';
+  }
+  function clamp(v) { return Math.max(0.01, Math.min(0.97, v)); }
+  function nudge(dx, dy) {
+    // ลากเร็วไปไกล ลากช้าละเอียด (แบบแทร็กแพดจริง)
+    var d = Math.hypot(dx, dy);
+    var gain = 1.4 * (1 + Math.min(d, 30) / 10);
+    pos.x = clamp(pos.x + dx * gain / screen.clientWidth);
+    pos.y = clamp(pos.y + dy * gain / screen.clientHeight);
+    place();
+  }
+  function click() {
+    var r = document.createElement('span');
+    r.className = 'ripple';
+    r.style.left = (pos.x * 100 + 1) + '%';
+    r.style.top = (pos.y * 100 + 1) + '%';
+    screen.appendChild(r);
+    setTimeout(function () { r.remove(); }, 500);
+  }
+  pad.addEventListener('pointerdown', function (e) {
+    pad.setPointerCapture(e.pointerId);
+    last = { x: e.clientX, y: e.clientY }; moved = 0; downAt = Date.now();
+  });
+  pad.addEventListener('pointermove', function (e) {
+    if (!last) return;
+    var dx = e.clientX - last.x, dy = e.clientY - last.y;
+    moved += Math.abs(dx) + Math.abs(dy);
+    last = { x: e.clientX, y: e.clientY };
+    nudge(dx, dy);
+  });
+  pad.addEventListener('pointerup', function () {
+    if (last && moved < 6 && Date.now() - downAt < 350) click();
+    last = null;
+  });
+  pad.addEventListener('pointercancel', function () { last = null; });
+  pad.addEventListener('keydown', function (e) {
+    var step = 8;
+    if (e.key === 'ArrowLeft') nudge(-step, 0);
+    else if (e.key === 'ArrowRight') nudge(step, 0);
+    else if (e.key === 'ArrowUp') nudge(0, -step);
+    else if (e.key === 'ArrowDown') nudge(0, step);
+    else if (e.key === 'Enter' || e.key === ' ') click();
+    else return;
+    e.preventDefault();
+  });
+  window.addEventListener('resize', place);
+  place();
+})();
+</script>
+</body>
+</html>
